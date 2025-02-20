@@ -55,7 +55,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4"
+      className=" fixed h-screen inset-0 z-50  flex items-center justify-center bg-black bg-opacity-50 p-4"
     >
       <motion.div
         initial={{ scale: 0.95, opacity: 0 }}
