@@ -1,20 +1,23 @@
 import React, { useState } from 'react';
-import { Home, Menu, X } from 'lucide-react';
+import { Home, Menu, X, Users } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Link, useNavigate } from 'react-router-dom';
 import AuthModal from './AuthModal';
 import { supabase } from '../lib/supabase';
 
 const Navbar = () => {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
   };
 
   const navLinks = [
-    { name: 'Home', href: '#' },
+    { name: 'Home', href: '/' },
     { name: 'Properties', href: '#' },
+    { name: 'Roommates', href: '/roommates', icon: Users },
     { name: 'About Us', href: '#' },
     { name: 'Contact', href: '#' },
   ];
@@ -29,8 +32,10 @@ const Navbar = () => {
             animate={{ opacity: 1, x: 0 }}
             className="flex items-center space-x-2"
           >
-            <Home className="h-6 w-6 text-navy-600" />
-            <span className="text-lg font-semibold text-navy-900">PG Finder</span>
+            <Link to="/" className="flex items-center space-x-2">
+              <Home className="h-6 w-6 text-navy-600" />
+              <span className="text-lg font-semibold text-navy-900">PG Finder</span>
+            </Link>
           </motion.div>
 
           {/* Desktop Menu */}
@@ -41,13 +46,14 @@ const Navbar = () => {
               className="flex items-center space-x-8"
             >
               {navLinks.map((link) => (
-                <a
+                <Link
                   key={link.name}
-                  href={link.href}
-                  className="text-sm text-gray-600 hover:text-navy-600 transition-colors"
+                  to={link.href}
+                  className="flex items-center space-x-1 text-sm text-gray-600 hover:text-navy-600 transition-colors"
                 >
-                  {link.name}
-                </a>
+                  {link.icon && <link.icon className="h-4 w-4" />}
+                  <span>{link.name}</span>
+                </Link>
               ))}
               <motion.button
                 whileHover={{ scale: 1.02 }}
@@ -60,6 +66,7 @@ const Navbar = () => {
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
+                onClick={() => navigate('/list-property')}
                 className="px-4 py-2 text-sm font-medium text-navy-600 border border-navy-600 rounded-md hover:bg-navy-50 transition-colors"
               >
                 List Property
@@ -93,22 +100,33 @@ const Navbar = () => {
             >
               <div className="py-4 space-y-4">
                 {navLinks.map((link) => (
-                  <a
+                  <Link
                     key={link.name}
-                    href={link.href}
-                    className="block px-4 py-2 text-sm text-gray-600 hover:bg-navy-50 hover:text-navy-600 rounded-md transition-colors"
+                    to={link.href}
+                    className="flex items-center space-x-2 px-4 py-2 text-sm text-gray-600 hover:bg-navy-50 hover:text-navy-600 rounded-md transition-colors"
+                    onClick={() => setIsMobileMenuOpen(false)}
                   >
-                    {link.name}
-                  </a>
+                    {link.icon && <link.icon className="h-4 w-4" />}
+                    <span>{link.name}</span>
+                  </Link>
                 ))}
                 <div className="px-4 space-y-2">
                   <button
-                    onClick={() => setIsAuthModalOpen(true)}
+                    onClick={() => {
+                      setIsAuthModalOpen(true);
+                      setIsMobileMenuOpen(false);
+                    }}
                     className="w-full py-2 text-sm font-medium text-white bg-navy-600 rounded-md hover:bg-navy-700 transition-colors"
                   >
                     Sign In
                   </button>
-                  <button className="w-full py-2 text-sm font-medium text-navy-600 border border-navy-600 rounded-md hover:bg-navy-50 transition-colors">
+                  <button 
+                    onClick={() => {
+                      navigate('/list-property');
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className="w-full py-2 text-sm font-medium text-navy-600 border border-navy-600 rounded-md hover:bg-navy-50 transition-colors"
+                  >
                     List Property
                   </button>
                 </div>

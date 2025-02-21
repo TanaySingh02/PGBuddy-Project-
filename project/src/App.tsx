@@ -1,9 +1,12 @@
 import React from 'react';
 import { Home, Building2, Users, Search, MapPin } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import SearchBar from './components/SearchBar';
 import PropertyCard from './components/PropertyCard';
+import ListProperty from './pages/ListProperty';
+import Roommates from './pages/Roommates';
 
 function App() {
   const stats = [
@@ -42,10 +45,8 @@ function App() {
     }
   ];
 
-  return (
-    <div className="min-h-screen bg-gray-50">
-      <Navbar />
-      
+  const HomePage = () => (
+    <>
       {/* Hero Section */}
       <div className="relative bg-gradient-to-b from-navy-50 to-white">
         <div className="container mx-auto px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
@@ -157,11 +158,22 @@ function App() {
             </blockquote>
             <div className="mt-6">
               <p className="text-base font-medium text-white">XYZ</p>
-              <p className="text-base text-navy-200">Founder, PG Finder</p>
+              <p className="text-base text-navy-200">PG OWNER</p>
             </div>
           </motion.div>
         </div>
       </div>
+    </>
+  );
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/list-property" element={<ListProperty />} />
+        <Route path="/roommates" element={<Roommates />} />
+      </Routes>
     </div>
   );
 }
