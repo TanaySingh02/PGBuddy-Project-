@@ -14,8 +14,14 @@ interface Student {
   profile_image?: string;
 }
 
+interface College {
+  id: number;
+  name: string;
+}
+
 const Roommates = () => {
   const [students, setStudents] = useState<Student[]>([]);
+  const [colleges, setColleges] = useState<College[]>([]);
   const [filters, setFilters] = useState({
     college: '',
     course: '',
@@ -25,9 +31,22 @@ const Roommates = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    fetchColleges();
     fetchStudents();
   }, [filters]);
 
+  // Fetch college list from colleges.json
+  const fetchColleges = async () => {
+    try {
+      const response = await fetch('/colleges.json');
+      const data = await response.json();
+      setColleges(data);
+    } catch (error) {
+      console.error('Error fetching colleges:', error);
+    }
+  };
+
+  // Fetch students based on filters
   const fetchStudents = async () => {
     try {
       let query = supabase
@@ -83,7 +102,6 @@ const Roommates = () => {
         throw error;
       }
 
-      // TODO: Implement chat interface
       alert('Chat feature coming soon!');
     } catch (error) {
       console.error('Error initiating chat:', error);
@@ -106,16 +124,24 @@ const Roommates = () => {
         {/* Filters */}
         <div className="bg-white rounded-lg shadow-md p-6 mb-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            {/* College Dropdown */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">College</label>
-              <input
-                type="text"
+              <select
                 value={filters.college}
                 onChange={(e) => setFilters(prev => ({ ...prev, college: e.target.value }))}
                 className="w-full rounded-md border-gray-300 shadow-sm focus:border-navy-500 focus:ring-navy-500"
-                placeholder="Enter college name"
-              />
+              >
+                <option value="">All Colleges</option>
+                {colleges.map((college) => (
+                  <option key={college.id} value={college.name}>
+                    {college.name}
+                  </option>
+                ))}
+              </select>
             </div>
+            
+            {/* Course Dropdown */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Course</label>
               <select
@@ -130,6 +156,8 @@ const Roommates = () => {
                 <option value="Arts">Arts</option>
               </select>
             </div>
+
+            {/* Year Dropdown */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Year</label>
               <select
@@ -144,6 +172,8 @@ const Roommates = () => {
                 <option value="4">4th Year</option>
               </select>
             </div>
+
+            {/* Interest Dropdown */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Interest</label>
               <select
@@ -161,62 +191,6 @@ const Roommates = () => {
             </div>
           </div>
         </div>
-
-        {/* Students List */}
-        {loading ? (
-          <div className="text-center py-8">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-navy-600 mx-auto"></div>
-            <p className="mt-4 text-gray-600">Loading students...</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {students.map((student) => (
-              <motion.div
-                key={student.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="bg-white rounded-lg shadow-md overflow-hidden"
-              >
-                <div className="p-6">
-                  <div className="flex items-center space-x-4">
-                    <img
-                      src={student.profile_image || 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'}
-                      alt={student.full_name}
-                      className="h-16 w-16 rounded-full object-cover"
-                    />
-                    <div>
-                      <h3 className="text-lg font-semibold text-gray-900">{student.full_name}</h3>
-                      <p className="text-sm text-navy-800">{student.year}th Year Student</p>
-                    </div>
-                  </div>
-
-                  <div className="mt-4 space-y-2">
-                    <div className="text-sm text-navy-800">
-                      <School className="h-4 w-4 mr-2" />
-                      {student.college_name}
-                    </div>
-                    <div className="flex items-center text-sm text-navy-800">
-                      <BookOpen className="h-4 w-4 mr-2" />
-                      {student.course}
-                    </div>
-                    <div className="flex items-center text-sm text-navy-800">
-                      <Heart className="h-4 w-4 mr-2" />
-                      {student.interests.join(', ')}
-                    </div>
-                  </div>
-
-                  <button
-                    onClick={() => initiateChat(student.id)}
-                    className="mt-6 w-full flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-navy-600 hover:bg-navy-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-navy-500"
-                  >
-                    <MessageCircle className="h-4 w-4 mr-2" />
-                    Chat with {student.full_name.split(' ')[0]}
-                  </button>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        )}
       </div>
     </div>
   );
