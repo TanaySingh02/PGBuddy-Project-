@@ -23,68 +23,58 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200 shadow-sm">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="flex items-center space-x-2"
-          >
+          <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
             <Link to="/" className="flex items-center space-x-2">
-              <Home className="h-6 w-6 text-navy-600" />
-              <span className="text-lg font-semibold text-navy-900">PG Finder</span>
+              <Home className="h-6 w-6 text-red-600" />
+              <span className="text-lg font-semibold text-gray-900">PG Finder</span>
             </Link>
           </motion.div>
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-8">
-            <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="flex items-center space-x-8"
-            >
-              {navLinks.map((link) => (
+            {navLinks.map((link) => (
+              <motion.div whileHover={{ scale: 1.05 }} key={link.name}>
                 <Link
-                  key={link.name}
                   to={link.href}
-                  className="flex items-center space-x-1 text-sm text-gray-600 hover:text-navy-600 transition-colors"
+                  className="relative flex items-center space-x-1 text-sm text-gray-600 hover:text-red-600 transition-all"
                 >
                   {link.icon && <link.icon className="h-4 w-4" />}
-                  <span>{link.name}</span>
+                  <span className="relative group">
+                    {link.name}
+                    <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-red-600 transition-all group-hover:w-full"></span>
+                  </span>
                 </Link>
-              ))}
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={() => setIsAuthModalOpen(true)}
-                className="px-4 py-2 text-sm font-medium text-white bg-navy-600 rounded-md hover:bg-navy-700 transition-colors"
-              >
-                Sign In
-              </motion.button>
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={() => navigate('/list-property')}
-                className="px-4 py-2 text-sm font-medium text-navy-600 border border-navy-600 rounded-md hover:bg-navy-50 transition-colors"
-              >
-                List Property
-              </motion.button>
-            </motion.div>
+              </motion.div>
+            ))}
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => setIsAuthModalOpen(true)}
+              className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md shadow-md hover:bg-red-700 transition"
+            >
+              Sign In
+            </motion.button>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => navigate('/list-property')}
+              className="px-4 py-2 text-sm font-medium text-red-600 border border-red-600 rounded-md shadow-md hover:bg-red-50 transition"
+            >
+              List Property
+            </motion.button>
           </div>
 
           {/* Mobile Menu Button */}
           <motion.button
-            whileTap={{ scale: 0.95 }}
+            whileTap={{ scale: 0.9 }}
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             className="md:hidden p-2 rounded-md hover:bg-gray-100"
           >
-            {isMobileMenuOpen ? (
-              <X className="h-5 w-5 text-gray-600" />
-            ) : (
-              <Menu className="h-5 w-5 text-gray-600" />
-            )}
+            {isMobileMenuOpen ? <X className="h-5 w-5 text-gray-600" /> : <Menu className="h-5 w-5 text-gray-600" />}
           </motion.button>
         </div>
 
@@ -92,54 +82,47 @@ const Navbar = () => {
         <AnimatePresence>
           {isMobileMenuOpen && (
             <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.2 }}
-              className="md:hidden overflow-hidden"
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className="md:hidden absolute top-16 left-0 right-0 bg-white shadow-lg border-t border-gray-200 py-4"
             >
-              <div className="py-4 space-y-4">
-                {navLinks.map((link) => (
-                  <Link
-                    key={link.name}
-                    to={link.href}
-                    className="flex items-center space-x-2 px-4 py-2 text-sm text-gray-600 hover:bg-navy-50 hover:text-navy-600 rounded-md transition-colors"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    {link.icon && <link.icon className="h-4 w-4" />}
-                    <span>{link.name}</span>
-                  </Link>
-                ))}
-                <div className="px-4 space-y-2">
-                  <button
-                    onClick={() => {
-                      setIsAuthModalOpen(true);
-                      setIsMobileMenuOpen(false);
-                    }}
-                    className="w-full py-2 text-sm font-medium text-white bg-navy-600 rounded-md hover:bg-navy-700 transition-colors"
-                  >
-                    Sign In
-                  </button>
-                  <button 
-                    onClick={() => {
-                      navigate('/list-property');
-                      setIsMobileMenuOpen(false);
-                    }}
-                    className="w-full py-2 text-sm font-medium text-navy-600 border border-navy-600 rounded-md hover:bg-navy-50 transition-colors"
-                  >
-                    List Property
-                  </button>
-                </div>
+              {navLinks.map((link) => (
+                <Link
+                  key={link.name}
+                  to={link.href}
+                  className="block px-4 py-2 text-sm text-gray-600 hover:bg-red-50 hover:text-red-600 transition"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  {link.name}
+                </Link>
+              ))}
+              <div className="px-4 space-y-2">
+                <button
+                  onClick={() => {
+                    setIsAuthModalOpen(true);
+                    setIsMobileMenuOpen(false);
+                  }}
+                  className="w-full py-2 text-sm font-medium text-white bg-red-600 rounded-md shadow-md hover:bg-red-700 transition"
+                >
+                  Sign In
+                </button>
+                <button
+                  onClick={() => {
+                    navigate('/list-property');
+                    setIsMobileMenuOpen(false);
+                  }}
+                  className="w-full py-2 text-sm font-medium text-red-600 border border-red-600 rounded-md shadow-md hover:bg-red-50 transition"
+                >
+                  List Property
+                </button>
               </div>
             </motion.div>
           )}
         </AnimatePresence>
       </div>
 
-      <AuthModal
-        isOpen={isAuthModalOpen}
-        onClose={() => setIsAuthModalOpen(false)}
-      />
+      <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
     </nav>
   );
 };
